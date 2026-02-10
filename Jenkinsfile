@@ -17,30 +17,21 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building ${APP_NAME}"
-                sh 'echo "Compiling application..."'
+                echo "Compiling application..."
             }
         }
 
         stage('Test') {
             steps {
                 echo "Running unit tests"
-                sh 'echo "All tests passed!"'
+                echo "All tests passed!"
             }
         }
 
         stage('Code Quality') {
             steps {
                 echo "Running static code analysis"
-                sh 'echo "Quality gate passed"'
-            }
-        }
-
-        stage('Deploy to Dev') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo "Deploying to DEV environment"
+                echo "Quality gate passed"
             }
         }
 
@@ -63,4 +54,3 @@ pipeline {
         }
     }
 }
-
