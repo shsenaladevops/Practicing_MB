@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['dev', 'prod'],
+            description: 'Select environment to deploy'
+        )
+    }
+
     environment {
         APP_NAME = "my-web-app"
     }
@@ -17,40 +25,28 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building ${APP_NAME}"
-                echo "Compiling application..."
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running unit tests"
-                echo "All tests passed!"
+                echo "Running tests"
             }
         }
 
-        stage('Code Quality') {
-            steps {
-                echo "Running static code analysis"
-                echo "Quality gate passed"
-            }
-        }
-
-        stage('Deploy to Prod') {
+        stage('Deploy') {
             when {
-                branch 'main'
+                expression { params.ENV == 'prod' && env.BRANCH_NAME == 'main' }
             }
             steps {
-                echo "Deploying to PRODUCTION environment"
+                echo "Deploying ${APP_NAME} to PRODUCTION"
             }
         }
     }
 
     post {
-        success {
-            echo "Pipeline completed successfully 🚀"
-        }
-        failure {
-            echo "Pipeline failed ❌"
+        always {
+            echo "Pipeline finished for ${params.ENV}"
         }
     }
 }
